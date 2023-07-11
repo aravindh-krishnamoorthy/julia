@@ -15,17 +15,19 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
     
                 # Compute elements (1,j)--(j-1,j)
                 for i=j-1:-1:1
-                    for k=1:i
-                        S[k,j] = S[k,j] - RL[k,i+1]*S[i+1,j]
-                    end
+                    # for k=1:i
+                    #     S[k,j] = S[k,j] - RL[k,i+1]*S[i+1,j]
+                    # end
+                    GC.@preserve S RL BLAS.axpy!(i, -S[i+1,j], pointer(RL, i*N+1), 1, pointer(S, (j-1)*N+1), 1)
                     S[i,j] = S[i,j]/RL[i,i]
                 end
             
                 # Update elements from other columns
                 for i=j-1:-1:1
-                    for k=1:i
-                        S[k,i] = S[k,i] - RL[k,j]*conj(S[i,j])
-                    end
+                    # for k=1:i
+                    #     S[k,i] = S[k,i] - RL[k,j]*conj(S[i,j])
+                    # end
+                    GC.@preserve S RL BLAS.axpy!(i, -conj(S[i,j]), pointer(RL, (j-1)*N+1), 1, pointer(S, (i-1)*N+1), 1)
                 end
             end
         end
@@ -38,17 +40,19 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
     
                 # Compute elements (i,1)--(i,i-1)
                 for j=i+1:N
-                    for k=j:N
-                        S[k,i] = S[k,i] - RL[k,j-1]*S[j-1,i]
-                    end
+                    # for k=j:N
+                    #     S[k,i] = S[k,i] - RL[k,j-1]*S[j-1,i]
+                    # end
+                    GC.@preserve S RL BLAS.axpy!(N-j+1, -S[j-1,i], pointer(RL, (j-2)*N+j), 1, pointer(S, (i-1)*N+j), 1)
                     S[j,i] = S[j,i]/RL[j,j]
                 end
             
                 # Update elements from other row
                 for j=i+1:N
-                    for k=j:N
-                        S[k,j] = S[k,j] - RL[k,i]*conj(S[j,i])
-                    end
+                    # for k=j:N
+                    #     S[k,j] = S[k,j] - RL[k,i]*conj(S[j,i])
+                    # end
+                    GC.@preserve S RL BLAS.axpy!(N-j+1, -conj(S[j,i]), pointer(RL, (i-1)*N+j), 1, pointer(S, (j-1)*N+j), 1)
                 end
             end
         end
