@@ -65,8 +65,6 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
     return S
 end
 
-using LinearAlgebra
-
 function invbk(B::BunchKaufman{T}) where {T}
     p = invperm(B.p)
     # Algorithm based on: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
@@ -77,8 +75,6 @@ function invbk(B::BunchKaufman{T}) where {T}
     end
     return Y
 end
-
-using LinearAlgebra
 
 function invchol(C::Cholesky{T}) where {T}
     # Algorithm: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
