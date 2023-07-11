@@ -18,13 +18,9 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
                     for k=1:i
                         S[k,j] = S[k,j] - RL[k,i+1]*S[i+1,j]
                     end
-                end
-    
-                # Normalise
-                for i=j-1:-1:1
                     S[i,j] = S[i,j]/RL[i,i]
                 end
-        
+            
                 # Update elements from other columns
                 for i=j-1:-1:1
                     for k=1:i
@@ -45,13 +41,9 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
                     for k=j:N
                         S[k,i] = S[k,i] - RL[k,j-1]*S[j-1,i]
                     end
-                end
-    
-                # Normalise
-                for j=2:N
                     S[j,i] = S[j,i]/RL[j,j]
                 end
-        
+            
                 # Update elements from other row
                 for j=i+1:N
                     for k=j:N
@@ -79,5 +71,5 @@ end
 function invchol(C::Cholesky{T}) where {T}
     # Algorithm: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
     R = C.U
-    return trtrsy(R, inv(Diagonal(R)))
+    return trtrsy('U', R, inv(Diagonal(R)))
 end
