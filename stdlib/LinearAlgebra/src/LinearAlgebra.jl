@@ -425,6 +425,7 @@ include("generic.jl")
 include("blas.jl")
 include("matmul.jl")
 include("lapack.jl")
+include("lapackextensions.jl")
 
 include("dense.jl")
 include("tridiag.jl")
