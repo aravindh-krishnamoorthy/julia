@@ -1,5 +1,5 @@
 function trtrsy(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where {T}
-    trtrsy!(uplo, RL, copy(S))
+    trtrsy!(uplo, copy(RL), copy(S))
 end
 
 function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where {T}
