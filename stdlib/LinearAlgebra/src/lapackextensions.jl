@@ -5,7 +5,6 @@ end
 function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where {T}
     # Algorithm: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
     N = size(RL,1)
-    RL = Matrix{T}(RL)
     S = Matrix{T}(S)
     if uplo == 'U'
         @inbounds begin
