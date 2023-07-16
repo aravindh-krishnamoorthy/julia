@@ -1,7 +1,3 @@
-function trtrsy(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where {T}
-    trtrsy!(uplo, copy(RL), copy(S))
-end
-
 function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where {T}
     # Algorithm: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
     N = size(RL,1)
@@ -10,13 +6,11 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
         @inbounds begin
             for j=N:-1:1
                 for i=j:-1:1
-                    @simd for k=i+1:j
+                    @simd for k=i+1:N
                         S[i,j] = S[i,j] - RL[i,k]*S[k,j] ;
                     end
-                    @simd for k=j+1:N
-                        S[i,j] = S[i,j] - RL[i,k]*conj(S[j,k]) ;
-                    end
                     S[i,j] = i == j ? convert(T, real(S[i,j]/RL[i,i])) : S[i,j]/RL[i,i] ;
+                    S[j,i] = conj(S[i,j])
                 end
             end
         end
@@ -25,13 +19,11 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
         @inbounds begin
             for i=1:N
                 for j=1:i
-                    @simd for k=1:j-1
+                    @simd for k=1:i-1
                         S[i,j] = S[i,j] - RL[i,k]*conj(S[j,k]) ;
                     end
-                    @simd for k=j:i-1
-                        S[i,j] = S[i,j] - RL[i,k]*S[k,j] ;
-                    end
                     S[i,j] = i == j ? convert(T, real(S[i,j]/RL[i,i])) : S[i,j]/RL[i,i] ;
+                    S[j,i] = conj(S[i,j])
                 end
             end
         end
@@ -44,15 +36,15 @@ function invbk(B::BunchKaufman{T}) where {T}
     p = invperm(B.p)
     # Algorithm based on: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
     if B.uplo == 'U'
-        Y = trtrsy('L', B.U', inv(Tridiagonal(B.U)*B.D))[p,p]
+        Y = trtrsy!('L', B.U', inv(Tridiagonal(B.U)*B.D))[p,p]
     else # if B.uplo == 'L'
-        Y = trtrsy('U', B.L', inv(Tridiagonal(B.L)*B.D))[p,p]
+        Y = trtrsy!('U', B.L', inv(Tridiagonal(B.L)*B.D))[p,p]
     end
     return Y
 end
 
 function invchol(C::Cholesky{T}) where {T}
     # Algorithm: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
-    R = C.U
-    return trtrsy('U', R, inv(Diagonal(R)))
+    R = copy(C.U)
+    return trtrsy!('U', R, inv(Diagonal(R)))
 end
