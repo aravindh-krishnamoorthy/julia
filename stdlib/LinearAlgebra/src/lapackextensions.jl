@@ -4,12 +4,19 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
     if uplo == 'U'
         @inbounds begin
             for j=N:-1:1
-                for i=j:-1:1
-                    for k=N:-1:i+1
+                # k = N,...,j+1
+                for k=N:-1:j+1
+                    for i=1:j
                         S[i,j] = S[i,j] - RL[i,k]*S[k,j]
                     end
-                    S[i,j] = i == j ? convert(T, real(S[i,j]/RL[i,i])) : S[i,j]/RL[i,i]
-                    S[j,i] = conj(S[i,j])
+                end
+                # k = j,...,1
+                for k=j:-1:1
+                    S[k,j] = S[k,j]/RL[k,k]
+                    S[j,k] = conj(S[k,j])
+                    for i=1:k-1
+                        S[i,j] = S[i,j] - RL[i,k]*S[k,j]
+                    end
                 end
             end
         end
