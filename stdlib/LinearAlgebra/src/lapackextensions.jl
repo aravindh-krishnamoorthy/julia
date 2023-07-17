@@ -1,7 +1,6 @@
 function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where {T}
     # Algorithm: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
     N = size(RL,1)
-    S = Matrix{T}(S)
     if uplo == 'U'
         @inbounds begin
             for j=N:-1:1
@@ -46,5 +45,5 @@ end
 function invchol(C::Cholesky{T}) where {T}
     # Algorithm: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
     R = copy(C.U)
-    return trtrsy!('U', R, inv(Diagonal(R)))
+    return trtrsy!('U', R, Matrix{T}(inv(Diagonal(R))))
 end
