@@ -6,9 +6,9 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
             for j=N:-1:1
                 for i=j:-1:1
                     for k=N:-1:i+1
-                        S[i,j] = S[i,j] - RL[i,k]*S[k,j] ;
+                        S[i,j] = S[i,j] - RL[i,k]*S[k,j]
                     end
-                    S[i,j] = i == j ? convert(T, real(S[i,j]/RL[i,i])) : S[i,j]/RL[i,i] ;
+                    S[i,j] = i == j ? convert(T, real(S[i,j]/RL[i,i])) : S[i,j]/RL[i,i]
                     S[j,i] = conj(S[i,j])
                 end
             end
@@ -19,9 +19,9 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
             for i=1:N
                 for j=1:i
                     for k=1:i-1
-                        S[i,j] = S[i,j] - RL[i,k]*S[k,j] ;
+                        S[i,j] = S[i,j] - RL[i,k]*S[k,j]
                     end
-                    S[i,j] = i == j ? convert(T, real(S[i,j]/RL[i,i])) : S[i,j]/RL[i,i] ;
+                    S[i,j] = i == j ? convert(T, real(S[i,j]/RL[i,i])) : S[i,j]/RL[i,i]
                     S[j,i] = conj(S[i,j])
                 end
             end
