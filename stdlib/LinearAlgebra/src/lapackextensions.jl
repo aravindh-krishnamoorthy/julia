@@ -6,7 +6,7 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
         @inbounds begin
             for j=N:-1:1
                 for i=j:-1:1
-                    @simd for k=i+1:N
+                    for k=N:-1:i+1
                         S[i,j] = S[i,j] - RL[i,k]*S[k,j] ;
                     end
                     S[i,j] = i == j ? convert(T, real(S[i,j]/RL[i,i])) : S[i,j]/RL[i,i] ;
@@ -19,7 +19,7 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
         @inbounds begin
             for i=1:N
                 for j=1:i
-                    @simd for k=1:i-1
+                    for k=1:i-1
                         S[i,j] = S[i,j] - RL[i,k]*S[k,j] ;
                     end
                     S[i,j] = i == j ? convert(T, real(S[i,j]/RL[i,i])) : S[i,j]/RL[i,i] ;
