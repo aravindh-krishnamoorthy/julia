@@ -7,13 +7,12 @@ function trtrsy!(uplo::Char, RL::AbstractMatrix{T}, S::AbstractMatrix{T}) where 
                 # k = N,...,j+1
                 for k=N:-1:j+1
                     for i=1:j
-                        S[i,j] = S[i,j] - RL[i,k]*S[k,j]
+                        S[i,j] = S[i,j] - RL[i,k]*conj(S[j,k])
                     end
                 end
                 # k = j,...,1
                 for k=j:-1:1
                     S[k,j] = S[k,j]/RL[k,k]
-                    S[j,k] = conj(S[k,j])
                     for i=1:k-1
                         S[i,j] = S[i,j] - RL[i,k]*S[k,j]
                     end
