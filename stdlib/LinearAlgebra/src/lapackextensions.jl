@@ -50,6 +50,6 @@ end
 
 function invchol(C::Cholesky{T}) where {T}
     # Algorithm: 'Matrix Inversion Using Cholesky Decomposition', Aravindh Krishnamoorthy, Deepak Menon, arXiv:1111.4144.
-    R = copy(C.U)
-    return trtrsy!('U', R, Matrix{T}(inv(Diagonal(R))))
+    L = copy(C.L)
+    return trtrsy!('L', L, Matrix{T}(inv(Diagonal(L))))
 end
